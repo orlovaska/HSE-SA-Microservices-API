@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ResponsibleService.Models;
-using ResponsibleService.DataMock;
+using UserService.Models;
+using UserService.DataMock;
 
-namespace ResponsibleService.Controllers
+namespace UserService.Controllers
 {
     [ApiController]
     [Route("users")]

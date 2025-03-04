@@ -1,6 +1,6 @@
-﻿namespace ResponsibleService
+﻿namespace UserService
 {
-    using ResponsibleService.Models;
+    using UserService.Models;
     using System.Collections.Generic;
 
     namespace DataMock

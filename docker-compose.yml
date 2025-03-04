@@ -6,6 +6,9 @@ services:
       context: .
       dockerfile: GatewayService/Dockerfile
     command: dotnet GatewayService.dll
+    depends_on:
+      - responsible_service
+      - user_service
     volumes:
       - ./GatewayService:/app
     ports:
@@ -23,5 +26,17 @@ services:
       - ./ResponsibleService:/app
     ports:
       - "8082:8082"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+
+  user_service:
+    build:
+      context: .
+      dockerfile: UserService/Dockerfile
+    command: dotnet UserService.dll
+    volumes:
+      - ./UserService:/app
+    ports:
+      - "8083:8083"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development

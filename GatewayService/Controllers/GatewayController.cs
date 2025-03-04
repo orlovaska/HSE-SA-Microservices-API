@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Models;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text;
+using GatewayService.Models;
 
 namespace ResponsibilityServiceGateway.Controllers
 {

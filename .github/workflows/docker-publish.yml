@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master  # или ваша ветка
+  workflow_dispatch:  # добавляем поддержку ручного запуска
 
 jobs:
   build:
@@ -23,10 +24,10 @@ jobs:
         run: |
           sudo apt-get install -y docker-compose
 
-      - name: Build Docker image with Docker Compose
+      - name: Build Docker images with Docker Compose
         run: |
-          docker-compose build
+          docker-compose build  # Собираем образы для всех сервисов
 
-      - name: Push Docker image
+      - name: Push Docker images
         run: |
-          docker-compose push
+          docker-compose push  # Отправляем все собранные образы в Docker Hub

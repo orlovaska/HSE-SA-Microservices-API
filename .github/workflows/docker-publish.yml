@@ -3,8 +3,7 @@ name: Docker Push
 on:
   push:
     branches:
-      - master  # или другая ветка, на которую вы хотите реагировать
-  workflow_dispatch:  # добавляем поддержку ручного запуска
+      - master  # или ваша ветка
 
 jobs:
   build:
@@ -20,10 +19,14 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build Docker image
+      - name: Set up Docker Compose
         run: |
-          docker build -t rabotarabocaa001/hse-sa-microservices-api:${{ github.sha }} .
+          sudo apt-get install -y docker-compose
+
+      - name: Build Docker image with Docker Compose
+        run: |
+          docker-compose build
 
       - name: Push Docker image
         run: |
-          docker push rabotarabocaa001/hse-sa-microservices-api:${{ github.sha }}
+          docker-compose push

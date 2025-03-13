@@ -24,21 +24,21 @@ jobs:
         
     - name: Restore dependencies
       run: |
-        dotnet restore user_service/user_service.csproj
-        dotnet restore responsible_service/responsible_service.csproj
-        dotnet restore gateway_service/gateway_service.csproj
+        dotnet restore user_service.csproj
+        dotnet restore responsible_service.csproj
+        dotnet restore gateway_service.csproj
 
     - name: Build the projects
       run: |
-        dotnet build user_service/user_service.csproj --configuration Release
-        dotnet build responsible_service/responsible_service.csproj --configuration Release
-        dotnet build gateway_service/gateway_service.csproj --configuration Release
+        dotnet build user_service.csproj --configuration Release
+        dotnet build responsible_service.csproj --configuration Release
+        dotnet build gateway_service.csproj --configuration Release
         
     - name: Run tests
       run: |
-        dotnet test user_service/user_service.csproj
-        dotnet test responsible_service/responsible_service.csproj
-        dotnet test gateway_service/gateway_service.csproj
+        dotnet test user_service.csproj
+        dotnet test responsible_service.csproj
+        dotnet test gateway_service.csproj
 
     - name: Build Docker images
       run: |

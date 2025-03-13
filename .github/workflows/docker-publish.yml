@@ -24,27 +24,27 @@ jobs:
         
     - name: Restore dependencies
       run: |
-        dotnet restore user_service.csproj
-        dotnet restore responsible_service.csproj
-        dotnet restore gateway_service.csproj
+        dotnet restore ./UserService/UserService.csproj
+        dotnet restore ./ResponsibleService/ResponsibleService.csproj
+        dotnet restore ./GatewayService/GatewayService.csproj
 
     - name: Build the projects
       run: |
-        dotnet build user_service.csproj --configuration Release
-        dotnet build responsible_service.csproj --configuration Release
-        dotnet build gateway_service.csproj --configuration Release
+        dotnet build ./UserService/UserService.csproj --configuration Release
+        dotnet build ./ResponsibleService/ResponsibleService.csproj --configuration Release
+        dotnet build ./GatewayService/GatewayService.csproj --configuration Release
         
     - name: Run tests
       run: |
-        dotnet test user_service.csproj
-        dotnet test responsible_service.csproj
-        dotnet test gateway_service.csproj
+        dotnet test ./UserService/UserService.csproj
+        dotnet test ./ResponsibleService/ResponsibleService.csproj
+        dotnet test ./GatewayService/GatewayService.csproj
 
     - name: Build Docker images
       run: |
-        docker build -t ${{ secrets.DOCKER_REPOSITORY }}:user_service ./user_service
-        docker build -t ${{ secrets.DOCKER_REPOSITORY }}:responsible_service ./responsible_service
-        docker build -t ${{ secrets.DOCKER_REPOSITORY }}:gateway_service ./gateway_service
+        docker build -t ${{ secrets.DOCKER_REPOSITORY }}:user_service ./UserService
+        docker build -t ${{ secrets.DOCKER_REPOSITORY }}:responsible_service ./ResponsibleService
+        docker build -t ${{ secrets.DOCKER_REPOSITORY }}:gateway_service ./GatewayService
 
     - name: Log in to Docker Hub
       run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}

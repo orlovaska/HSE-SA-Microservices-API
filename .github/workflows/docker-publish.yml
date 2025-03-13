@@ -26,8 +26,16 @@ jobs:
 
       - name: Build Docker images with Docker Compose
         run: |
-          docker-compose build  # Собираем образы для всех сервисов
+          docker-compose build
 
-      - name: Push Docker images
+      - name: Tag images with commit hash and push to Docker Hub
         run: |
-          docker-compose push  # Отправляем все собранные образы в Docker Hub
+          # Тегируем образы с хешем коммита
+          docker tag gateway_service rabotarabocaa001/hse-sa-microservices-api-gateway:${{ github.sha }}
+          docker tag responsible_service rabotarabocaa001/hse-sa-microservices-api-responsible:${{ github.sha }}
+          docker tag user_service rabotarabocaa001/hse-sa-microservices-api-user:${{ github.sha }}
+
+          # Отправляем образы в Docker Hub
+          docker push rabotarabocaa001/hse-sa-microservices-api-gateway:${{ github.sha }}
+          docker push rabotarabocaa001/hse-sa-microservices-api-responsible:${{ github.sha }}
+          docker push rabotarabocaa001/hse-sa-microservices-api-user:${{ github.sha }}

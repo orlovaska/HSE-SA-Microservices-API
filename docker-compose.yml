@@ -5,7 +5,6 @@ services:
     build:
       context: .
       dockerfile: GatewayService/Dockerfile
-    image: rabotarabocaa001/hse-sa-microservices-api-gateway:${{ github.sha }}  # Добавляем тег
     command: dotnet GatewayService.dll
     depends_on:
       - responsible_service
@@ -22,7 +21,6 @@ services:
     build:
       context: .
       dockerfile: ResponsibleService/Dockerfile
-    image: rabotarabocaa001/hse-sa-microservices-api-responsible:${{ github.sha }}  # Добавляем тег
     command: dotnet ResponsibleService.dll
     volumes:
       - ./ResponsibleService:/app
@@ -35,7 +33,6 @@ services:
     build:
       context: .
       dockerfile: UserService/Dockerfile
-    image: rabotarabocaa001/hse-sa-microservices-api-user:${{ github.sha }}  # Добавляем тег
     command: dotnet UserService.dll
     volumes:
       - ./UserService:/app

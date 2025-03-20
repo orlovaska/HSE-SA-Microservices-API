@@ -8,6 +8,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        dotnet-version: ["8.0"]  # Используйте актуальную версию .NET
 
     steps:
     - name: Checkout repository
@@ -16,12 +20,7 @@ jobs:
     - name: Set up .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '8.0'
-
-    - name: Install Docker Compose
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y docker-compose
+        dotnet-version: '8.0'  # Замените на нужную версию .NET
 
     - name: Restore dependencies
       run: |
@@ -47,13 +46,17 @@ jobs:
         dotnet publish ./ResponsibleService/ResponsibleService.csproj --configuration Release --output ./publish
         dotnet publish ./GatewayService/GatewayService.csproj --configuration Release --output ./publish
 
-    - name: Build and start Docker Compose
+    - name: Build Docker images
       run: |
-        docker-compose -f docker-compose.yml up --build -d
+        docker build -t ${{ secrets.DOCKER_REPOSITORY }}:user_service ./UserService
+        docker build -t ${{ secrets.DOCKER_REPOSITORY }}:responsible_service ./ResponsibleService
+        docker build -t ${{ secrets.DOCKER_REPOSITORY }}:gateway_service ./GatewayService
 
     - name: Log in to Docker Hub
-      run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
     - name: Push Docker images
       run: |
-        docker-compose -f docker-compose.yml push
+        docker push ${{ secrets.DOCKER_REPOSITORY }}:user_service
+        docker push ${{ secrets.DOCKER_REPOSITORY }}:responsible_service
+        docker push ${{ secrets.DOCKER_REPOSITORY }}:gateway_service

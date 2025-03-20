@@ -15,10 +15,10 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       
     - name: Set up .NET
-      uses: actions/setup-dotnet@v2
+      uses: actions/setup-dotnet@v3
       with:
         dotnet-version: '8.0'  # Замените на нужную версию .NET
         
@@ -39,6 +39,12 @@ jobs:
         dotnet test ./UserService/UserService.csproj
         dotnet test ./ResponsibleService/ResponsibleService.csproj
         dotnet test ./GatewayService/GatewayService.csproj
+
+    - name: Publish the projects
+      run: |
+        dotnet publish ./UserService/UserService.csproj --configuration Release --output ./publish
+        dotnet publish ./ResponsibleService/ResponsibleService.csproj --configuration Release --output ./publish
+        dotnet publish ./GatewayService/GatewayService.csproj --configuration Release --output ./publish
 
     - name: Build Docker images
       run: |

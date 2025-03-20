@@ -18,6 +18,11 @@ jobs:
       with:
         dotnet-version: '8.0'
 
+    - name: Install Docker Compose
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y docker-compose
+
     - name: Restore dependencies
       run: |
         dotnet restore ./UserService/UserService.csproj

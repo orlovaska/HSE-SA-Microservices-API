@@ -1,0 +1,56 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - master  # Событие, когда пушится в ветку master
+  pull_request:
+    branches:
+      - master  # Событие, когда создается pull request для ветки master
+  workflow_dispatch:  # Это позволит запускать процесс вручную через интерфейс GitHub
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Шаг 1: Checkout исходного кода
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Шаг 2: Настроить Docker (если используете QEMU для кросс-платформенных сборок)
+      - name: Set up Docker
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: all
+
+      # Шаг 3: Настроить Docker Buildx
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # Шаг 4: Войти в Docker Hub с использованием секрета
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # Шаг 5: Строим Docker образы с использованием Docker Compose
+      - name: Build Docker images
+        run: |
+          docker compose -f OutsourcingModule/docker-compose.yml build
+
+      # Шаг 6: Публикуем Docker образы в Docker Hub
+      - name: Push Docker images
+        run: |
+          docker compose -f OutsourcingModule/docker-compose.yml push
+
+      # Шаг 7: Запуск контейнеров в фоновом режиме
+      - name: Run services
+        run: |
+          docker compose -f OutsourcingModule/docker-compose.yml up -d
+
+      # Шаг 8: Завершаем работу и останавливаем контейнеры
+      - name: Shut down services
+        run: |
+          docker compose -f OutsourcingModule/docker-compose.yml down

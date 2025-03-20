@@ -35,22 +35,32 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Шаг 5: Строим Docker образы с использованием Docker Compose
+      # Шаг 5: Установим рабочую директорию и проверим наличие docker-compose.yml
+      - name: Set working directory and check docker-compose file
+        run: |
+          cd OutsourcingModule
+          ls -l docker-compose.yml
+
+      # Шаг 6: Строим Docker образы с использованием Docker Compose
       - name: Build Docker images
         run: |
-          docker compose -f OutsourcingModule/docker-compose.yml build
+          cd OutsourcingModule
+          docker compose -f docker-compose.yml build --verbose
 
-      # Шаг 6: Публикуем Docker образы в Docker Hub
+      # Шаг 7: Публикуем Docker образы в Docker Hub
       - name: Push Docker images
         run: |
-          docker compose -f OutsourcingModule/docker-compose.yml push
+          cd OutsourcingModule
+          docker compose -f docker-compose.yml push --verbose
 
-      # Шаг 7: Запуск контейнеров в фоновом режиме
+      # Шаг 8: Запуск контейнеров в фоновом режиме
       - name: Run services
         run: |
-          docker compose -f OutsourcingModule/docker-compose.yml up -d
+          cd OutsourcingModule
+          docker compose -f docker-compose.yml up -d
 
-      # Шаг 8: Завершаем работу и останавливаем контейнеры
+      # Шаг 9: Завершаем работу и останавливаем контейнеры
       - name: Shut down services
         run: |
-          docker compose -f OutsourcingModule/docker-compose.yml down
+          cd OutsourcingModule
+          docker compose -f docker-compose.yml down

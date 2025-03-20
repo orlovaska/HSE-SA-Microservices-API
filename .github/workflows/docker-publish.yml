@@ -8,20 +8,16 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        dotnet-version: ["8.0"]  # Используйте актуальную версию .NET
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-      
+
     - name: Set up .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '8.0'  # Замените на нужную версию .NET
-        
+        dotnet-version: '8.0'
+
     - name: Restore dependencies
       run: |
         dotnet restore ./UserService/UserService.csproj
@@ -33,7 +29,7 @@ jobs:
         dotnet build ./UserService/UserService.csproj --configuration Release
         dotnet build ./ResponsibleService/ResponsibleService.csproj --configuration Release
         dotnet build ./GatewayService/GatewayService.csproj --configuration Release
-        
+
     - name: Run tests
       run: |
         dotnet test ./UserService/UserService.csproj
@@ -46,17 +42,13 @@ jobs:
         dotnet publish ./ResponsibleService/ResponsibleService.csproj --configuration Release --output ./publish
         dotnet publish ./GatewayService/GatewayService.csproj --configuration Release --output ./publish
 
-    - name: Build Docker images
+    - name: Build and start Docker Compose
       run: |
-        docker build -t ${{ secrets.DOCKER_REPOSITORY }}:user_service ./UserService
-        docker build -t ${{ secrets.DOCKER_REPOSITORY }}:responsible_service ./ResponsibleService
-        docker build -t ${{ secrets.DOCKER_REPOSITORY }}:gateway_service ./GatewayService
+        docker-compose -f docker-compose.yml up --build -d
 
     - name: Log in to Docker Hub
       run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Push Docker images
       run: |
-        docker push ${{ secrets.DOCKER_REPOSITORY }}:user_service
-        docker push ${{ secrets.DOCKER_REPOSITORY }}:responsible_service
-        docker push ${{ secrets.DOCKER_REPOSITORY }}:gateway_service
+        docker-compose -f docker-compose.yml push

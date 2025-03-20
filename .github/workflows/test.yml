@@ -1,0 +1,32 @@
+name: Run GatewayIntegrationTests on Push
+
+on:  
+  push:
+    branches:
+      - master  # Запуск при пуше в master
+  pull_request:
+    branches:
+      - master  # Запуск при PR в master
+  workflow_dispatch:  # Позволяет запускать вручную через GitHub Actions
+
+jobs:
+  test:
+    runs-on: ubuntu-latest  # Можно заменить на windows-latest, если нужно
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8.0
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'  # Используем .NET 8.0
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build solution
+        run: dotnet build --no-restore
+
+      - name: Run tests
+        run: dotnet test GatewayIntegrationTests/GatewayIntegrationTests.csproj --no-build --verbosity normal
